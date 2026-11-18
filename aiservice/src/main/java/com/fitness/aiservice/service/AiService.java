@@ -20,5 +20,5 @@ public class AiService {
     public Recommendation geActivityRecommendation(String activityId)  {
         return aiRepo.getActivityById(activityId).orElseThrow(()->
                 new RuntimeException("Recommendation not found for activity: "+ activityId));
-    } 
+    }
 }
