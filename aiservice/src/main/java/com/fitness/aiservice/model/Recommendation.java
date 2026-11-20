@@ -6,17 +6,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-@Document
+@Document(collection = "recommendations")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Recommendation {
     private String id;
+    @Field("activityId")
     private String activityId;
     private String userId;
     private String activityType;

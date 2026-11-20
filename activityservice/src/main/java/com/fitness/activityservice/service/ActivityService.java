@@ -4,11 +4,13 @@ import com.fitness.activityservice.ActivityRepository;
 import com.fitness.activityservice.dto.ActivityRequest;
 import com.fitness.activityservice.dto.ActivityResponse;
 import com.fitness.activityservice.model.Activity;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.crypto.ec.ECElGamalDecryptor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,6 +24,10 @@ public class ActivityService {
     private final ActivityRepository activityRepository;
     private final UserValidationService userValidationService;
     private final RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
+
 
         @Value("${rabbitmq.exchange.name}")
         private String exchange;
@@ -53,7 +59,11 @@ public class ActivityService {
         }
         return mapToResponse(savedActivity);
     }
-
+    @PostConstruct
+    public void checkDatabase() {
+        log.info("MongoDB database: {}",
+                mongoTemplate.getDb().getName());
+    }
     private ActivityResponse mapToResponse(Activity activity){
         ActivityResponse response = new ActivityResponse();
 

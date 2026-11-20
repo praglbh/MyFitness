@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface AiRepo extends MongoRepository<Recommendation,String> {
 
-    List<Recommendation> getUserById(String userId);
+    List<Recommendation> findByUserId(String userId);
+    boolean existsByActivityId(String activityId);
 
-    Optional<Recommendation> getActivityById(String activityId);
+    Optional<Recommendation> findByActivityId(String activityId);
 }

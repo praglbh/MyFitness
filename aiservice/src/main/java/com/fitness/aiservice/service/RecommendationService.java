@@ -11,14 +11,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Builder
-public class AiService {
+public class RecommendationService {
     private final AiRepo aiRepo;
     public List<Recommendation> getUserRecommendation(String userId) {
-        return aiRepo.getUserById(userId);
+        return aiRepo.findByUserId(userId);
     }
 
-    public Recommendation geActivityRecommendation(String activityId)  {
-        return aiRepo.getActivityById(activityId).orElseThrow(()->
+    public Recommendation getActivityRecommendation(String activityId)  {
+        return aiRepo.findByActivityId(activityId).orElseThrow(()->
                 new RuntimeException("Recommendation not found for activity: "+ activityId));
     }
 }
