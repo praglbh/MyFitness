@@ -9,7 +9,10 @@ spring:
     password: guest
     listener:
       simple:
-        default-requeue-rejected: false
+        default-requeue-rejected: false   # failed messages are not redelivered in a loop
+        concurrency: 1
+        max-concurrency: 1
+        prefetch: 1                       # one message at a time
 
 server:
   port: 8083
@@ -17,7 +20,6 @@ server:
 eureka:
   instance:
     hostname: localhost
-    instance-id: ${spring.application.name}:${server.port}
     prefer-ip-address: false
   client:
     serviceUrl:

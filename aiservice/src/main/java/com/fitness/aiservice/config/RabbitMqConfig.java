@@ -20,24 +20,12 @@ public class RabbitMqConfig {
     @Value("${rabbitmq.routing.key}")
     private String routingKey;
 
-    // Dead Letter Queue configuration
-    @Value("${rabbitmq.dlq.name:activity.dlq}")
-    private String dlqName;
-
-    @Value("${rabbitmq.dlx.exchange:activity.dlx}")
-    private String dlxName;
-
-    @Value("${rabbitmq.dlx.routing-key:activity.failed}")
-    private String dlqRoutingKey;
 
 
     // Main activity queue
     @Bean
-    public Queue activitiesQueue() {
-        return QueueBuilder.durable(queue)
-                .deadLetterExchange(dlxName)
-                .deadLetterRoutingKey(dlqRoutingKey)
-                .build();
+    public Queue activityQueue() {
+        return new Queue(queue, true);
     }
 
     // Main exchange
@@ -48,32 +36,9 @@ public class RabbitMqConfig {
 
     // Main queue binding
     @Bean
-    public Binding activitiesBinding() {
-        return BindingBuilder.bind(activitiesQueue())
-                .to(directExchange())
-                .with(routingKey);
+    public Binding activityBinding(Queue activityQueue, DirectExchange activityExchange) {
+        return BindingBuilder.bind(activityQueue).to(activityExchange).with(routingKey);
     }
-
-    // Dead Letter Exchange
-    @Bean
-    public DirectExchange deadLetterExchange() {
-        return new DirectExchange(dlxName);
-    }
-
-    // Dead Letter Queue
-    @Bean
-    public Queue deadLetterQueue() {
-        return QueueBuilder.durable(dlqName).build();
-    }
-
-    // Bind DLQ to DLX
-    @Bean
-    public Binding deadLetterBinding() {
-        return BindingBuilder.bind(deadLetterQueue())
-                .to(deadLetterExchange())
-                .with(dlqRoutingKey);
-    }
-
     @Bean
     public MessageConverter messageConverter() {
         return new JacksonJsonMessageConverter();
